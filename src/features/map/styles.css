@@ -1,0 +1,23 @@
+.tile{
+    display: inline-flex;
+    background-color: grey;
+}
+
+
+.spaceman{
+    background-image: url('/tiles/spaceman.png')
+}
+.plant{
+    background-image: url('/tiles/plant.png')
+}
+.table{
+    background-image: url('/tiles/table.png')
+}
+.television{
+    background-image: url('/tiles/television.png')
+}
+.floor{
+    background-color: grey;
+}
+.locker{
+    background-image: url('/tiles/locker.png')}
