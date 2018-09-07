@@ -1,10 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import walkSprite from './player_walk.png'
+import walkSprite from './abed.png'
 import handleMovement from './movement'
-import handleInteraction from './interaction'
 
-function Player(props) {
+function Abed(props) {
     
   return (
     <div
@@ -23,8 +22,8 @@ function Player(props) {
 
 function mapStateToProps(state) {
   return {
-    ...state.player,
+    ...state.abed,
   }
 }
 
-export default connect(mapStateToProps)(handleInteraction(Player),handleMovement(Player))
+export default connect(mapStateToProps)(handleMovement(Abed))

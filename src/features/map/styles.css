@@ -3,6 +3,9 @@
     background-color: grey;
 }
 
+.tube{
+    background-image: url('/tiles/tube.png')
+}
 
 .spaceman{
     background-image: url('/tiles/spaceman.png')

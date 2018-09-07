@@ -14,7 +14,7 @@ const playerReducer = (state = initialState, action) => {
         ...action.payload
       };
     case "ACTION":
-      alert('fuck you alien ')
+      alert('What are you, some kind of alien?! ')
       console.log(action.payload);
       return{...state, type,
         

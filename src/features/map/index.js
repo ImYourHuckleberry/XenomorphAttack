@@ -16,6 +16,8 @@ function getTileSprite(type) {
       return "spaceman";
     case 8:
       return "locker";
+    case 9:
+      return "tube"
       case 107:
       return "spaceman"
   }

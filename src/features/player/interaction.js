@@ -1,5 +1,8 @@
 import store from "../../config/store";
 import { SPRITE_SIZE, MAP_WIDTH, MAP_HEIGHT } from "../../config/constants";
+import ripley from '../ripley'
+import pierce from '../pierce'
+import abed from '../abed'
 
 export default function handleInteraction(player) {
   function isSurroundingInteractive(direction, pos, interaction) {
@@ -32,15 +35,23 @@ export default function handleInteraction(player) {
       type: "ACTION",
       payload: interaction
     });
+    //window.location="/battlescreen"
   }
   
   function canIInteract(newPos) {
-    const tiles = store.getState().map.tiles;
+    const ripleyPosition = store.getState().ripley.position;
+    const piercePosition = store.getState().pierce.position;
+    const abedPosition = store.getState().abed.position;
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
-    const nextTile = tiles[y][x];
-    return nextTile > 100;
-  }
+        
+    console.log(newPos)
+    console.log(ripleyPosition)
+    
+    if( ripleyPosition[0] === newPos[0]&&ripleyPosition[1] === newPos[1]||piercePosition[0] === newPos[0]&&piercePosition[1] === newPos[1]||abedPosition[0] === newPos[0]&&abedPosition[1]===newPos[1]){
+      return true;
+  }else{return false}}
+  
 
   function attemptInteract(interaction) {
     const pos = store.getState().player.position;
@@ -61,7 +72,7 @@ export default function handleInteraction(player) {
       case 13:
         return attemptInteract("ENTER_ACTION");
       default:
-        console.log(e.keyCode);
+            
     }
   }
 

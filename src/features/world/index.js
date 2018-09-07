@@ -1,6 +1,9 @@
 import React from 'react'
 import Map from '../map'
 import Player from '../player'
+import Ripley from '../ripley'
+import Pierce from '../pierce'
+import Abed from '../abed'
 
 import {tiles } from '../../data/maps/1'
 import store from '../../config/store'
@@ -21,6 +24,9 @@ function World(props) {
     >
       <Map />
       <Player />
+      <Ripley/>
+      <Pierce/>
+      <Abed/>
     </div>
   )
 }

@@ -1,9 +1,10 @@
 import store from "../../config/store";
 import { SPRITE_SIZE, MAP_WIDTH, MAP_HEIGHT } from "../../config/constants";
-import ripley from '../ripley'
-import pierce from '../pierce'
+import pierce from "../pierce";
+import player from "../player";
+import abed from "../abed";
 
-export default function handleMovement(player) {
+export default function handleMovement(ripley) {
   function getNewPosition(oldPos, direction) {
     switch (direction) {
       case "WEST":
@@ -17,23 +18,21 @@ export default function handleMovement(player) {
     }
   }
 
-
-
   function getSpriteLocation(direction, walkIndex) {
     switch (direction) {
       case "SOUTH":
-        return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 0}px`;
+        return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 2}px`;
       case "NORTH":
         return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 1}px`;
       case "EAST":
-        return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 2}px`;
-      case "WEST":
         return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 3}px`;
+      case "WEST":
+        return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 0}px`;
     }
   }
 
   function getWalkIndex() {
-    const walkIndex = store.getState().player.walkIndex;
+    const walkIndex = store.getState().ripley.walkIndex;
     return walkIndex >= 3 ? 0 : walkIndex + 1;
   }
 
@@ -53,22 +52,25 @@ export default function handleMovement(player) {
     return nextTile < 5;
   }
 
-function observeOtherCharacter(oldPos,newPos){
-  const ripleyPosition = store.getState().ripley.position;
-  const piercePosition = store.getState().pierce.position;
-  const abedPosition = store.getState().abed.position;
-  const y = newPos[1] / SPRITE_SIZE;
-  const x = newPos[0] / SPRITE_SIZE;
-  
-  if( ripleyPosition[0] === newPos[0]&&ripleyPosition[1] === newPos[1]||piercePosition[0] === newPos[0]&&piercePosition[1] === newPos[1]||abedPosition[0] === newPos[0]&&abedPosition[1]===newPos[1])
-    return true;
-  }
+  function observeOtherCharacter(oldPos, newPos) {
+    const piercePosition = store.getState().pierce.position;
+    const playerPosition = store.getState().player.position;
+    const abedPosition = store.getState().abed.position;
+    const y = newPos[1] / SPRITE_SIZE;
+    const x = newPos[0] / SPRITE_SIZE;
 
+    if (
+      (piercePosition[0] === newPos[0] && piercePosition[1] === newPos[1]) ||
+      (playerPosition[0] === newPos[0] && playerPosition[1] === newPos[1]) ||
+      (abedPosition[0] === newPos[0] && abedPosition[1] === newPos[1])
+    )
+      return true;
+  }
 
   function dispatchMove(direction, newPos) {
     const walkIndex = getWalkIndex();
     store.dispatch({
-      type: "MOVE_PLAYER",
+      type: "MOVE_RIPLEY",
       payload: {
         position: newPos,
         direction,
@@ -78,46 +80,63 @@ function observeOtherCharacter(oldPos,newPos){
     });
   }
 
-
-
-
-
   function attemptMove(direction) {
-    const oldPos = store.getState().player.position;
+    const oldPos = store.getState().ripley.position;
     const newPos = getNewPosition(oldPos, direction);
 
-    if (observeBoundaries(oldPos, newPos) && observeImpassable(oldPos, newPos)&&!observeOtherCharacter(oldPos,newPos))
+    if (
+      observeBoundaries(oldPos, newPos) &&
+      observeImpassable(oldPos, newPos) &&
+      !observeOtherCharacter(oldPos, newPos)
+    )
       dispatchMove(direction, newPos);
   }
 
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
 
-  function handleKeyDown(e) {
-    e.preventDefault();
-    
-    
-
-    switch (e.keyCode) {
-      case 37:
+  function switchInt() {
+    const int = getRandomInt(4);
+    switch (int) {
+      case 0:
         return attemptMove("WEST");
 
-      case 38:
+      case 1:
         return attemptMove("NORTH");
 
-      case 39:
+      case 2:
         return attemptMove("EAST");
 
-      case 40:
+      case 3:
         return attemptMove("SOUTH");
-      
+
       default:
-        
     }
   }
 
+  function handleKeyDown(e) {
+    e.preventDefault();
+
+    switch (e.keyCode) {
+      case 37:
+        setTimeout(switchInt, 30);
+
+      case 38:
+        setTimeout(switchInt, 30);
+
+      case 39:
+        setTimeout(switchInt, 30);
+
+      case 40:
+        setTimeout(switchInt, 30);
+
+      default:
+    }
+  }
   window.addEventListener("keydown", e => {
     handleKeyDown(e);
-    
   });
 
-  return player;
+  return ripley;
 }
