@@ -115,6 +115,7 @@ function observeOtherCharacter(oldPos,newPos){
   }
 
   window.addEventListener("keydown", e => {
+    
     handleKeyDown(e);
     
   });
