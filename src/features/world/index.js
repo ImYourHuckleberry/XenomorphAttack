@@ -28,7 +28,8 @@ function World(props) {
       <Ripley/>
       <Pierce/>
       <Abed/>
-      <RipleyAmmo/>
+      <RipleyAmmo />
+      
     </div>
   )
 }

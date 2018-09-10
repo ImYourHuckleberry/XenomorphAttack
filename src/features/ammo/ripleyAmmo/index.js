@@ -5,7 +5,18 @@ import handleMovement from './movement'
 
 function RipleyAmmo(props) {
     
-  return (
+  return (<div>
+    {props.energyball.map(ball=> <div
+      style={{
+        position: 'absolute',
+        top: ball.position[1],
+        left: ball.position[0],
+        backgroundImage: `url('${walkSprite}')`,
+        backgroundPosition: props.spriteLocation,
+        width: '65px',
+        height: '65px',
+      }}
+    />)}
     <div
       style={{
         position: 'absolute',
@@ -17,10 +28,12 @@ function RipleyAmmo(props) {
         height: '65px',
       }}
     />
+    </div>
   )
 }
 
 function mapStateToProps(state) {
+  
   return {
     ...state.ripleyAmmo,
   }

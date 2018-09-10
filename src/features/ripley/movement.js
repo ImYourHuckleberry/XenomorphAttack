@@ -92,46 +92,68 @@ export default function handleMovement(ripley) {
       dispatchMove(direction, newPos);
   }
 
-  function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-  }
+  // function getRandomInt(max) {
+  //   return Math.floor(Math.random() * Math.floor(max));
+  // }
 
-  function switchInt() {
-    const int = getRandomInt(4);
-    switch (int) {
-      case 0:
-        return attemptMove("WEST");
+  // function switchInt() {
+  //   const int = getRandomInt(4);
+  //   switch (int) {
+  //     case 0:
+  //       return attemptMove("WEST");
 
-      case 1:
-        return attemptMove("NORTH");
+  //     case 1:
+  //       return attemptMove("NORTH");
 
-      case 2:
-        return attemptMove("EAST");
+  //     case 2:
+  //       return attemptMove("EAST");
 
-      case 3:
-        return attemptMove("SOUTH");
+  //     case 3:
+  //       return attemptMove("SOUTH");
 
-      default:
-    }
-  }
+  //     default:
+  //   }
+  // }
 
+  // function handleKeyDown(e) {
+  //   e.preventDefault();
+
+  //   switch (e.keyCode) {
+  //     case 37:
+  //       setTimeout(switchInt, 30);
+
+  //     case 38:
+  //       setTimeout(switchInt, 30);
+
+  //     case 39:
+  //       setTimeout(switchInt, 30);
+
+  //     case 40:
+  //       setTimeout(switchInt, 30);
+
+  //     default:
+  //   }
+  // }
   function handleKeyDown(e) {
     e.preventDefault();
+    
+    
 
     switch (e.keyCode) {
       case 37:
-        setTimeout(switchInt, 30);
+        return attemptMove("WEST");
 
       case 38:
-        setTimeout(switchInt, 30);
+        return attemptMove("NORTH");
 
       case 39:
-        setTimeout(switchInt, 30);
+        return attemptMove("EAST");
 
       case 40:
-        setTimeout(switchInt, 30);
-
+        return attemptMove("SOUTH");
+      
       default:
+        
     }
   }
   window.addEventListener("keydown", e => {

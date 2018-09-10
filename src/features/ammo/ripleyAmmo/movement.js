@@ -3,21 +3,43 @@ import { SPRITE_SIZE, MAP_WIDTH, MAP_HEIGHT } from "../../../config/constants";
 import pierce from "../../pierce";
 import player from "../../player";
 import abed from "../../abed";
-import ripley from '../../ripley'
+import ripley from "../../ripley";
 
 export default function handleMovement(ripleyAmmo) {
   function getNewPosition(oldPos, direction) {
-    
-    
     switch (direction) {
       case "WEST":
-        return [oldPos[0] -= SPRITE_SIZE, oldPos[1]];
+        return [(oldPos[0] -= SPRITE_SIZE), oldPos[1]];
       case "EAST":
-        return [oldPos[0] += SPRITE_SIZE, oldPos[1]];
+        return [(oldPos[0] += SPRITE_SIZE), oldPos[1]];
       case "NORTH":
-        return [oldPos[0], oldPos[1] -= SPRITE_SIZE];
+        return [oldPos[0], (oldPos[1] -= SPRITE_SIZE)];
       case "SOUTH":
-        return [oldPos[0], oldPos[1] += SPRITE_SIZE];
+        return [oldPos[0], (oldPos[1] += SPRITE_SIZE)];
+      default:
+        return "why am i executing";
+    }
+  }
+
+  function mapNewPosition(energyball) {
+    console.log("start");
+    console.log(energyball);
+    console.log(energyball[0]);
+
+    const oldPos = energyball.position;
+    const direction = energyball.direction;
+
+    switch (direction) {
+      case "WEST":
+        return [(oldPos[0] -= SPRITE_SIZE), oldPos[1]];
+      case "EAST":
+        return [(oldPos[0] += SPRITE_SIZE), oldPos[1]];
+      case "NORTH":
+        return [oldPos[0], (oldPos[1] -= SPRITE_SIZE)];
+      case "SOUTH":
+        return [oldPos[0], (oldPos[1] += SPRITE_SIZE)];
+      default:
+        return "nothing here";
     }
   }
 
@@ -41,7 +63,7 @@ export default function handleMovement(ripleyAmmo) {
     const piercePosition = store.getState().pierce.position;
     const playerPosition = store.getState().player.position;
     const abedPosition = store.getState().abed.position;
-    const ripleyPosition=store.getState().ripley.position
+    const ripleyPosition = store.getState().ripley.position;
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
 
@@ -54,60 +76,58 @@ export default function handleMovement(ripleyAmmo) {
       return true;
   }
 
-  function dispatchMove(direction, newPos) {
-    console.log('this is my direction')
-    console.log(direction)
-    console.log(newPos)
-    
+  function dispatchMove(thisEnergyball) {
+    const energyballs = store.getState().ripleyAmmo.energyball;
+    const id = store.getState().ripleyAmmo.id;
+    const updatedEnergyball = energyballs;
+    const updatedId = id + 1;
+    updatedEnergyball.push(thisEnergyball);
+    const updatedPosition = energyballs.map(energyball =>
+      mapNewPosition(energyball)
+    );
+
     store.dispatch({
       type: "MOVE_RIPLEY_AMMO",
-      payload: {
-        position: newPos,
-        direction,
-        energyball:[{newPos,direction}]
-        
-        
-      }
+      payload: { updatedEnergyball, updatedPosition, updatedId }
     });
   }
 
-  function dispatchInteraction(){
-    if(store.getState().ripleyAmmo.position != []){
-    const position=store.getState().ripleyAmmo.position
-    console.log(store.getState().ripleyAmmo.position)
+  function dispatchInteraction(thisEnergyball) {
+
+      const updatedEnergyball=
+
+      store.dispatch({
+        type: "RIPLEY_AMMO_ACTION",
+
+        payload: {updatedEnergyball}
+      });
     
-    store.dispatch({
-      type:"RIPLEY_AMMO_ACTION",
+  }
 
-      payload: position,
-    })
-  }}
-
-  function attemptMove() {
-    const direction=store.getState().ripley.direction;
+  function makeNewEnergyball() {
+    const id = store.getState().ripleyAmmo.id;
+    const direction = store.getState().ripley.direction;
     const oldPos = store.getState().ripley.position;
     const newPos = getNewPosition(oldPos, store.getState().ripley.direction);
-
+    const energyball = { id, direction, position: newPos };
     if (
       observeBoundaries(oldPos, newPos) &&
       observeImpassable(oldPos, newPos) &&
       !observeOtherCharacter(oldPos, newPos)
-    ){
+    ) {
       
-      dispatchMove(direction, newPos);}
+      //make newPos position
 
-  else{
-      
-      dispatchInteraction()
+      dispatchMove(energyball);
+    }
+    //dispatch createnewenergyball
+    else {
+      dispatchInteraction(energyball);
+    }
   }
-}
 
-  
-
-  
   window.addEventListener("keydown", e => {
-    
-    setTimeout(attemptMove, 30);
+    setTimeout(makeNewEnergyball, 30);
   });
 
   return ripleyAmmo;
