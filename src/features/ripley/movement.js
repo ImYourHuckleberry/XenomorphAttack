@@ -79,6 +79,16 @@ export default function handleMovement(ripley) {
       }
     });
   }
+  function dispatchMoveDirection(direction, oldPos){
+    const walkIndex = getWalkIndex();
+    store.dispatch({
+      type:"MOVE_RIPLEY",
+      payload:{position: oldPos,
+        direction,
+        walkIndex,
+        spriteLocation: getSpriteLocation(direction, walkIndex)
+    }
+  })}
 
   function attemptMove(direction) {
     const oldPos = store.getState().ripley.position;
@@ -90,70 +100,27 @@ export default function handleMovement(ripley) {
       !observeOtherCharacter(oldPos, newPos)
     )
       dispatchMove(direction, newPos);
+      else(dispatchMoveDirection(direction, oldPos))
   }
 
-  // function getRandomInt(max) {
-  //   return Math.floor(Math.random() * Math.floor(max));
-  // }
-
-  // function switchInt() {
-  //   const int = getRandomInt(4);
-  //   switch (int) {
-  //     case 0:
-  //       return attemptMove("WEST");
-
-  //     case 1:
-  //       return attemptMove("NORTH");
-
-  //     case 2:
-  //       return attemptMove("EAST");
-
-  //     case 3:
-  //       return attemptMove("SOUTH");
-
-  //     default:
-  //   }
-  // }
-
-  // function handleKeyDown(e) {
-  //   e.preventDefault();
-
-  //   switch (e.keyCode) {
-  //     case 37:
-  //       setTimeout(switchInt, 30);
-
-  //     case 38:
-  //       setTimeout(switchInt, 30);
-
-  //     case 39:
-  //       setTimeout(switchInt, 30);
-
-  //     case 40:
-  //       setTimeout(switchInt, 30);
-
-  //     default:
-  //   }
-  // }
   function handleKeyDown(e) {
     e.preventDefault();
-    
-    
+    const int = Math.floor(Math.random() * Math.floor(4))
 
-    switch (e.keyCode) {
-      case 37:
+    switch (int) {
+      case 0:
         return attemptMove("WEST");
 
-      case 38:
+      case 1:
         return attemptMove("NORTH");
 
-      case 39:
+      case 2:
         return attemptMove("EAST");
 
-      case 40:
+      case 3:
         return attemptMove("SOUTH");
-      
+
       default:
-        
     }
   }
   window.addEventListener("keydown", e => {

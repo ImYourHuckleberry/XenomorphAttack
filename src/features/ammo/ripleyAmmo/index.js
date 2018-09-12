@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import walkSprite from './energyball.png'
+import ripleyAmmo from './energyball.png'
 import handleMovement from './movement'
 
 function RipleyAmmo(props) {
@@ -11,7 +11,7 @@ function RipleyAmmo(props) {
         position: 'absolute',
         top: ball.position[1],
         left: ball.position[0],
-        backgroundImage: `url('${walkSprite}')`,
+        backgroundImage: `url('${ripleyAmmo}')`,
         backgroundPosition: props.spriteLocation,
         width: '65px',
         height: '65px',
@@ -22,7 +22,7 @@ function RipleyAmmo(props) {
         position: 'absolute',
         top: props.position[1],
         left: props.position[0],
-        backgroundImage: `url('${walkSprite}')`,
+        backgroundImage: `url('${ripleyAmmo}')`,
         backgroundPosition: props.spriteLocation,
         width: '65px',
         height: '65px',

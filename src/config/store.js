@@ -5,6 +5,7 @@ import ripleyReducer from '../features/ripley/reducer'
 import pierceReducer from '../features/pierce/reducer'
 import abedReducer from '../features/abed/reducer'
 import ripleyAmmoReducer from '../features/ammo/ripleyAmmo/reducer'
+import abedAmmoReducer from '../features/ammo/abedAmmo/reducer'
 
 const rootReducer = combineReducers({
   player: playerReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   pierce:pierceReducer,
   abed:abedReducer,
   ripleyAmmo:ripleyAmmoReducer,
+  abedAmmo:abedAmmoReducer
 })
 
 const store = createStore(

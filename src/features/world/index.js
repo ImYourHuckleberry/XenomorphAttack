@@ -5,6 +5,7 @@ import Ripley from '../ripley'
 import Pierce from '../pierce'
 import Abed from '../abed'
 import RipleyAmmo from '../ammo/ripleyAmmo'
+import AbedAmmo from '../ammo/abedAmmo'
 
 import {tiles } from '../../data/maps/1'
 import store from '../../config/store'
@@ -29,6 +30,7 @@ function World(props) {
       <Pierce/>
       <Abed/>
       <RipleyAmmo />
+      <AbedAmmo />
       
     </div>
   )

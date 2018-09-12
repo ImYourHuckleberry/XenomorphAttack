@@ -31,8 +31,9 @@ export default function handleInteraction(player) {
     }
   }
   function dispatchInteraction(interaction) {
+    console.log(interaction )
     store.dispatch({
-      type: "ACTION",
+       type: "ACTION",
       payload: interaction
     });
     //window.location="/battlescreen"

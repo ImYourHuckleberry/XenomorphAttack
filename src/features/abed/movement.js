@@ -79,10 +79,23 @@ export default function handleMovement(abed) {
       }
     });
   }
+  function dispatchMoveDirection(direction, oldPos){
+    const walkIndex = getWalkIndex();
+    store.dispatch({
+      type:"MOVE_ABED",
+      payload:{position: oldPos,
+        direction,
+        walkIndex,
+        spriteLocation: getSpriteLocation(direction, walkIndex)
+    }
+  })}
 
   function attemptMove(direction) {
     const oldPos = store.getState().abed.position;
     const newPos = getNewPosition(oldPos, direction);
+    console.log(oldPos)
+    console.log(direction)
+    console.log(newPos)
 
     if (
       observeBoundaries(oldPos, newPos) &&
@@ -90,14 +103,16 @@ export default function handleMovement(abed) {
       !observeOtherCharacter(oldPos, newPos)
     )
       dispatchMove(direction, newPos);
+      else(
+        dispatchMoveDirection(direction, oldPos)
+      )
   }
 
-  function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-  }
+ 
+  function handleKeyDown(e) {
+    e.preventDefault();
+    const int = Math.floor(Math.random() * Math.floor(4))
 
-  function switchInt() {
-    const int = getRandomInt(4);
     switch (int) {
       case 0:
         return attemptMove("WEST");
@@ -110,26 +125,6 @@ export default function handleMovement(abed) {
 
       case 3:
         return attemptMove("SOUTH");
-
-      default:
-    }
-  }
-
-  function handleKeyDown(e) {
-    e.preventDefault();
-
-    switch (e.keyCode) {
-      case 37:
-        setTimeout(switchInt, 3000);
-
-      case 38:
-        setTimeout(switchInt, 3000);
-
-      case 39:
-        setTimeout(switchInt, 3000);
-
-      case 40:
-        setTimeout(switchInt, 3000);
 
       default:
     }

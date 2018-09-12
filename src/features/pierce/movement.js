@@ -79,6 +79,16 @@ export default function handleMovement(pierce) {
       }
     });
   }
+  function dispatchMoveDirection(direction, oldPos){
+    const walkIndex = getWalkIndex();
+    store.dispatch({
+      type:"MOVE_PIERCE",
+      payload:{position: oldPos,
+        direction,
+        walkIndex,
+        spriteLocation: getSpriteLocation(direction, walkIndex)
+    }
+  })}
 
   function attemptMove(direction) {
     const oldPos = store.getState().pierce.position;
@@ -90,14 +100,13 @@ export default function handleMovement(pierce) {
       !observeOtherCharacter(oldPos, newPos)
     )
       dispatchMove(direction, newPos);
+      else(dispatchMoveDirection(direction, oldPos))
   }
 
-  function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-  }
+  function handleKeyDown(e) {
+    e.preventDefault();
+    const int = Math.floor(Math.random() * Math.floor(4))
 
-  function switchInt() {
-    const int = getRandomInt(4);
     switch (int) {
       case 0:
         return attemptMove("WEST");
@@ -110,26 +119,6 @@ export default function handleMovement(pierce) {
 
       case 3:
         return attemptMove("SOUTH");
-
-      default:
-    }
-  }
-
-  function handleKeyDown(e) {
-    e.preventDefault();
-
-    switch (e.keyCode) {
-      case 37:
-        setTimeout(switchInt, 300);
-
-      case 38:
-        setTimeout(switchInt, 300);
-
-      case 39:
-        setTimeout(switchInt, 300);
-
-      case 40:
-        setTimeout(switchInt, 300);
 
       default:
     }

@@ -14,16 +14,26 @@ const playerReducer = (state = initialState, action) => {
         ...action.payload
       };
     case "ACTION":
-      alert('What are you, some kind of alien?! ')
-      console.log(action.payload);
-      return{...state, type,
+      switch(action.payload){
+        case "SPACE_BAR_ACTION":
+        alert("spacebaraction")
+        return{...state, type,
         
-    }
+        }
+      
+      case "ENTER_ACTION":
+      alert("enteraction")
+        return{...state, type,
+        
+        
+        }
+      }
   
-
+  
     default:
       return state;
-  }
+  
+}
 };
 
 export default playerReducer;

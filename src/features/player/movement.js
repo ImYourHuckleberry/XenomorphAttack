@@ -1,7 +1,7 @@
 import store from "../../config/store";
 import { SPRITE_SIZE, MAP_WIDTH, MAP_HEIGHT } from "../../config/constants";
-import ripley from '../ripley'
-import pierce from '../pierce'
+import ripley from "../ripley";
+import pierce from "../pierce";
 
 export default function handleMovement(player) {
   function getNewPosition(oldPos, direction) {
@@ -16,8 +16,6 @@ export default function handleMovement(player) {
         return [oldPos[0], oldPos[1] + SPRITE_SIZE];
     }
   }
-
-
 
   function getSpriteLocation(direction, walkIndex) {
     switch (direction) {
@@ -53,17 +51,24 @@ export default function handleMovement(player) {
     return nextTile < 5;
   }
 
-function observeOtherCharacter(oldPos,newPos){
-  const ripleyPosition = store.getState().ripley.position;
-  const piercePosition = store.getState().pierce.position;
-  const abedPosition = store.getState().abed.position;
-  const y = newPos[1] / SPRITE_SIZE;
-  const x = newPos[0] / SPRITE_SIZE;
-  
-  if( ripleyPosition[0] === newPos[0]&&ripleyPosition[1] === newPos[1]||piercePosition[0] === newPos[0]&&piercePosition[1] === newPos[1]||abedPosition[0] === newPos[0]&&abedPosition[1]===newPos[1])
-    return true;
+  function observeOtherCharacter(oldPos, newPos) {
+    const ripleyPosition = store.getState().ripley.position;
+    const piercePosition = store.getState().pierce.position;
+    const abedPosition = store.getState().abed.position;
+    const y = newPos[1] / SPRITE_SIZE;
+    const x = newPos[0] / SPRITE_SIZE;
+
+    if (
+      (ripleyPosition[0] === newPos[0] && ripleyPosition[1] === newPos[1]) ||
+      (piercePosition[0] === newPos[0] && piercePosition[1] === newPos[1]) ||
+      (abedPosition[0] === newPos[0] && abedPosition[1] === newPos[1])
+    )
+      return true;
   }
 
+  function observeAmmo(newPos){
+    
+  }
 
   function dispatchMove(direction, newPos) {
     const walkIndex = getWalkIndex();
@@ -77,24 +82,32 @@ function observeOtherCharacter(oldPos,newPos){
       }
     });
   }
-
-
-
-
+  function dispatchMoveDirection(direction, oldPos){
+    const walkIndex = getWalkIndex();
+    store.dispatch({
+      type:"MOVE_PLAYER",
+      payload:{position: oldPos,
+        direction,
+        walkIndex,
+        spriteLocation: getSpriteLocation(direction, walkIndex)
+    }
+  })}
 
   function attemptMove(direction) {
     const oldPos = store.getState().player.position;
     const newPos = getNewPosition(oldPos, direction);
 
-    if (observeBoundaries(oldPos, newPos) && observeImpassable(oldPos, newPos)&&!observeOtherCharacter(oldPos,newPos))
+    if (
+      observeBoundaries(oldPos, newPos) &&
+      observeImpassable(oldPos, newPos) &&
+      !observeOtherCharacter(oldPos, newPos)
+    )
       dispatchMove(direction, newPos);
+      else(dispatchMoveDirection(direction,oldPos))
   }
-
 
   function handleKeyDown(e) {
     e.preventDefault();
-    
-    
 
     switch (e.keyCode) {
       case 37:
@@ -108,16 +121,13 @@ function observeOtherCharacter(oldPos,newPos){
 
       case 40:
         return attemptMove("SOUTH");
-      
+
       default:
-        
     }
   }
 
   window.addEventListener("keydown", e => {
-    
     handleKeyDown(e);
-    
   });
 
   return player;
