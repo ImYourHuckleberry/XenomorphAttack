@@ -1,20 +1,22 @@
 import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import BattleScreen from './BattleScreen'
 import App from "./App";
 import { render } from "react-dom";
 import WinScreen from './WinScreen'
+import CharacterSelect from'./CharacterSelect'
 
 const Main = () => {
   return(
     
-    <BrowserRouter>
+    <Router>
       <Switch>
-        <Route exact path="/" component={App} />
+        <Route exact path ="/" component = {CharacterSelect}/>
+        <Route exact path="/play" component={App} />
         <Route exact path="/battlescreen" component={BattleScreen} />
         <Route exact path="/winscreen" component={WinScreen}/>
       </Switch>
-    </BrowserRouter>
+    </Router>
     
 )};
 export default Main;

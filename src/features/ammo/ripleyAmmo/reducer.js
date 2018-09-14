@@ -6,7 +6,7 @@ const initialState = {
   energyball: [],
   id: 1,
   hitSomething: false,
-  hitTotal:0
+  hitTotal:140
 };
 
 const ripleyAmmoReducer = (state = initialState, action) => {

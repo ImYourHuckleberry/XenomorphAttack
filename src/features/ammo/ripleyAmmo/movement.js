@@ -106,7 +106,7 @@ export default function handleMovement(ripleyAmmo) {
     const direction = store.getState().ripley.direction;
     const oldPos = store.getState().ripley.position;
     const newPos = getNewPosition(oldPos, direction);
-    const upgrade = store.getState().ripleyAmmo.hitTotal
+    const upgrade = store.getState().ripleyAmmo.hitTotal;
 
     if (observeBoundaries(newPos) && observeImpassable(newPos)) {
       const energyballs = store.getState().ripleyAmmo.energyball;
@@ -116,16 +116,14 @@ export default function handleMovement(ripleyAmmo) {
       const updatedEnergyballs = energyballs.concat(energyball);
       console.log("these are my balls");
       console.log(updatedEnergyballs);
-      if (upgrade<100){
-      const noHit = updatedEnergyballs.filter(
-        ball => ball.hitSomething === false
-      );
+      if (upgrade < 100) {
+        const noHit = updatedEnergyballs.filter(
+          ball => ball.hitSomething === false
+        );
 
-      dispatchNewEnergyballArray(noHit)
-      attemptMove();;}
-      else(
-        dispatchNewEnergyballArray(updatedEnergyballs),
-      attemptMove())
+        dispatchNewEnergyballArray(noHit);
+        attemptMove();
+      } else dispatchNewEnergyballArray(updatedEnergyballs), attemptMove();
     }
   }
 
@@ -150,21 +148,18 @@ export default function handleMovement(ripleyAmmo) {
     const newPos = energyballs.map(energyball => mapNewPosition(energyball));
 
     let i;
-    for (i = 0; i < newPos.length; i++)
-     {
-      
-        observeBoundaries(newPos[i])
-          ? (observeImpassable(newPos[i]))
-            ? (!observeOtherCharacter(newPos[i]))
-              ? true
-              : (energyballs[i].hitSomething = true,
-                dispatchNewEnergyballArray(energyballs),
-                newHitTotal())
-            : (energyballs[i].hitSomething = true,
-              dispatchNewEnergyballArray(energyballs))
-          : (energyballs[i].hitSomething = true,
-        dispatchNewEnergyballArray(energyballs))
-      ;
+    for (i = 0; i < newPos.length; i++) {
+      observeBoundaries(newPos[i])
+        ? observeImpassable(newPos[i])
+          ? !observeOtherCharacter(newPos[i])
+            ? true
+            : ((energyballs[i].hitSomething = true),
+              dispatchNewEnergyballArray(energyballs),
+              newHitTotal())
+          : ((energyballs[i].hitSomething = true),
+            dispatchNewEnergyballArray(energyballs))
+        : ((energyballs[i].hitSomething = true),
+          dispatchNewEnergyballArray(energyballs));
     }
     // {
     //   if (
@@ -186,14 +181,16 @@ export default function handleMovement(ripleyAmmo) {
   }
 
   window.addEventListener("keydown", e => {
-    const hits = store.getState().ripleyAmmo.hitTotal
-    if(hits>150){window.location ="/winscreen"}
-    else(
-    makeEnergyball())
-    })
+    const totalHits = store.getState().ripleyAmmo.hitTotal;
+    const health = store.getState().pierce.healthTotal;
 
-  
-  
+    health <= 0
+      ? window.removeEventListener("keydown", e)
+      : totalHits < 150
+        ? makeEnergyball()
+        : ((window.location = "/winscreen"),
+          window.removeEventListener("keydown", e));
+  });
 
   return ripleyAmmo;
 }

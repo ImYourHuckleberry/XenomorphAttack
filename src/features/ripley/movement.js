@@ -3,6 +3,7 @@ import { SPRITE_SIZE, MAP_WIDTH, MAP_HEIGHT } from "../../config/constants";
 import pierce from "../pierce";
 import player from "../player";
 import abed from "../abed";
+import ripleyAmmo from '../ammo/ripleyAmmo'
 
 export default function handleMovement(ripley) {
   function getNewPosition(oldPos, direction) {
@@ -122,7 +123,15 @@ export default function handleMovement(ripley) {
   }
 
   window.addEventListener("keydown", e => {
-    handleKeyDown(e);
+    const totalHits = store.getState().ripleyAmmo.hitTotal;
+    const health = store.getState().pierce.healthTotal;
+    if (health<=0||totalHits>=150){
+      window.removeEventListener("keydown", e)
+    }
+    else{
+
+
+    handleKeyDown(e);}
   });
 
   return ripley;

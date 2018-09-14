@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import World from './features/world'
 
-class App extends Component {
+class WinScreen extends Component {
   render() {
     return (
       <div>
@@ -11,4 +11,4 @@ class App extends Component {
   }
 }
 
-export default App
+export default WinScreen

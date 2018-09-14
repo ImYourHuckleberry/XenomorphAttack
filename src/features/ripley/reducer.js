@@ -4,6 +4,7 @@ const initialState = {
     direction: "EAST",
     walkIndex: 0,
     interaction: "",
+    isAbed:false,
     
   };
   
@@ -14,6 +15,11 @@ const initialState = {
         return {
           ...action.payload
         };
+
+        case"UPDATE_ABED":
+        return{
+          ...state, isAbed:action.payload
+        }
       
     
   

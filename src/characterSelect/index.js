@@ -12,3 +12,9 @@ class BattleScreen extends Component {
 }
 
 export default BattleScreen
+
+import React, { Component } from 'react'
+import World from './features/world'
+import store from './config/store';
+
+

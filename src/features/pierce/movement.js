@@ -207,9 +207,9 @@ export default function handleMovement(pierce) {
     const totalhit = store.getState().ripleyAmmo.hitTotal;
     totalhit > 150
       ? window.removeEventListener("keydown", e)
-      : health >= 0
+      : health > 0
         ? doISpawn()
-        : (window.location = "/battlescreen"),window.removeEventListener("keydown", e));
+        : (window.location = "/battlescreen",window.removeEventListener("keydown", e));
 
     // {
     // doISpawn();}
