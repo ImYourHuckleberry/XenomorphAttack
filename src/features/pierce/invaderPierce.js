@@ -1,10 +1,10 @@
 import store from "../../config/store";
 import { SPRITE_SIZE, MAP_WIDTH, MAP_HEIGHT } from "../../config/constants";
-import pierce from "../pierce";
+import ripley from "../ripley";
 import player from "../player";
 import abed from "../abed";
 
-export default function handleMovement(ripley) {
+export default function handleMovement(pierce) {
   function getNewPosition(oldPos, direction) {
     switch (direction) {
       case "WEST":
@@ -21,18 +21,18 @@ export default function handleMovement(ripley) {
   function getSpriteLocation(direction, walkIndex) {
     switch (direction) {
       case "SOUTH":
-      return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 1}px`;
+        return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 2}px`;
       case "NORTH":
         return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 1}px`;
       case "EAST":
-      return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 1}px`;
+        return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 3}px`;
       case "WEST":
-      return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 1}px`;
+        return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 0}px`;
     }
   }
 
   function getWalkIndex() {
-    const walkIndex = store.getState().ripley.walkIndex;
+    const walkIndex = store.getState().pierce.walkIndex;
     return walkIndex >= 3 ? 0 : walkIndex + 1;
   }
 
@@ -53,14 +53,14 @@ export default function handleMovement(ripley) {
   }
 
   function observeOtherCharacter(oldPos, newPos) {
-    const piercePosition = store.getState().pierce.position;
-   // const playerPosition = store.getState().player.position;
-   // const abedPosition = store.getState().abed.position;
+    const ripleyPosition = store.getState().ripley.position;
+    //const playerPosition = store.getState().player.position;
+    //const abedPosition = store.getState().abed.position;
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
 
     if (
-      (piercePosition[0] === newPos[0] && piercePosition[1] === newPos[1]) //||
+      (ripleyPosition[0] === newPos[0] && ripleyPosition[1] === newPos[1]) //||
       //(playerPosition[0] === newPos[0] && playerPosition[1] === newPos[1]) ||
       //(abedPosition[0] === newPos[0] && abedPosition[1] === newPos[1])
     )
@@ -70,7 +70,7 @@ export default function handleMovement(ripley) {
   function dispatchMove(direction, newPos) {
     const walkIndex = getWalkIndex();
     store.dispatch({
-      type: "MOVE_RIPLEY",
+      type: "MOVE_PIERCE",
       payload: {
         position: newPos,
         direction,
@@ -82,7 +82,7 @@ export default function handleMovement(ripley) {
   function dispatchMoveDirection(direction, oldPos){
     const walkIndex = getWalkIndex();
     store.dispatch({
-      type:"MOVE_RIPLEY",
+      type:"MOVE_PIERCE",
       payload:{position: oldPos,
         direction,
         walkIndex,
@@ -90,8 +90,36 @@ export default function handleMovement(ripley) {
     }
   })}
 
+  function dispatchNewPierceArray(pierceArray) {
+    console.log(pierceArray);
+    store.dispatch({
+      type: "UPDATE_PIERCE_ARRAY",
+      payload: { pierceArray }
+    });
+  }
+  function makePierce(){
+    const id = store.getState().pierce.id;
+
+    const hitSomething = store.getState().pierce.hitSomething;
+    const direction = store.getState().pierce.direction;
+    const oldPos = store.getState().pierce.position;
+    const newPos = getNewPosition(oldPos, direction);
+
+    if (observeBoundaries(newPos) && observeImpassable(newPos)) {
+      const pierces = store.getState().pierce.potion;
+
+      const pierce = { id, direction, position: newPos, hitSomething };
+
+      const updatedPierces = pierces.concat(pierce);
+      const noHit = updatedPierces.filter(pierce => pierce.hitSomething === false);
+      console.log(noHit);
+
+      dispatchNewPierceArray(noHit);
+      attemptMove();
+    }
+  }
   function attemptMove(direction) {
-    const oldPos = store.getState().ripley.position;
+    const oldPos = store.getState().pierce.position;
     const newPos = getNewPosition(oldPos, direction);
 
     if (
@@ -103,27 +131,29 @@ export default function handleMovement(ripley) {
       else(dispatchMoveDirection(direction, oldPos))
   }
 
-  function handleKeyDown(e) {
+    function handleKeyDown(e) {
     e.preventDefault();
+    const int = Math.floor(Math.random() * Math.floor(4))
 
-    switch (e.keyCode) {
-      case 37:
+    switch (int) {
+      case 0:
         return attemptMove("WEST");
 
-     
+      case 1:
+        return attemptMove("NORTH");
 
-      case 39:
+      case 2:
         return attemptMove("EAST");
 
-      
+      case 3:
+        return attemptMove("SOUTH");
 
       default:
     }
   }
-
   window.addEventListener("keydown", e => {
-    handleKeyDown(e);
+    makePierce();
   });
 
-  return ripley;
+  return pierce;
 }

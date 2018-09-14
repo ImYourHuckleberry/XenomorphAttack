@@ -61,13 +61,18 @@ function MapTile(props) {
         {
           props.tiles.map( row => <MapRow tiles={row} /> )
         }
+        <div>Total Hit: {props.score}</div>
+        <div>Total Health: {props.health}</div>
       </div>
+      
     )
   }
   
   function mapStateToProps(state) {
     return {
       tiles: state.map.tiles,
+      score: state.ripleyAmmo.hitTotal,
+      health: state.pierce.healthTotal
     }
   }
   

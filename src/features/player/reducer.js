@@ -3,7 +3,8 @@ const initialState = {
   spriteLocation: "0px 0px",
   direction: "EAST",
   walkIndex: 0,
-  interaction: ""
+  interaction: "",
+ 
 };
 
 const playerReducer = (state = initialState, action) => {
@@ -36,4 +37,4 @@ const playerReducer = (state = initialState, action) => {
 }
 };
 
-export default playerReducer;
+//export default playerReducer;

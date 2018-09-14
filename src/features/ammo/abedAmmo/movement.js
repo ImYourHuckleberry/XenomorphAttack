@@ -27,13 +27,13 @@ export default function handleMovement(abedAmmo) {
 
     switch (direction) {
       case "WEST":
-        return [(oldPos[0] -= SPRITE_SIZE ), oldPos[1]];
+        return [(oldPos[0] -= SPRITE_SIZE), oldPos[1]];
       case "EAST":
-        return [(oldPos[0] += SPRITE_SIZE ), oldPos[1]];
+        return [(oldPos[0] += SPRITE_SIZE), oldPos[1]];
       case "NORTH":
-        return [oldPos[0], (oldPos[1] -= SPRITE_SIZE )];
+        return [oldPos[0], (oldPos[1] -= SPRITE_SIZE)];
       case "SOUTH":
-        return [oldPos[0], (oldPos[1] += SPRITE_SIZE )];
+        return [oldPos[0], (oldPos[1] += SPRITE_SIZE)];
       default:
         return "nothing here";
     }
@@ -72,17 +72,12 @@ export default function handleMovement(abedAmmo) {
       return true;
   }
   function observePlayer(newPos) {
-    
     const playerPosition = store.getState().player.position;
-    
+
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
 
-    if (
-      
-      (playerPosition[0] === newPos[0] && playerPosition[1] === newPos[1]) 
-      
-    )
+    if (playerPosition[0] === newPos[0] && playerPosition[1] === newPos[1])
       return true;
   }
   // function occupySameSpace(newPos) {
@@ -149,6 +144,7 @@ export default function handleMovement(abedAmmo) {
     const direction = store.getState().abed.direction;
     const oldPos = store.getState().abed.position;
     const newPos = getNewPosition(oldPos, direction);
+    console.log(newPos)
 
     if (observeBoundaries(newPos) && observeImpassable(newPos)) {
       const potions = store.getState().abedAmmo.potion;

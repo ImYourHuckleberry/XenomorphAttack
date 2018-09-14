@@ -1,32 +1,31 @@
 const initialState = {
-  position: [],
+  position: [10000, 10000],
   // direction: "",
   // interaction: "",
   shouldBeMoving: false,
   energyball: [],
   id: 1,
   hitSomething: false,
+  hitTotal:0
 };
 
 const ripleyAmmoReducer = (state = initialState, action) => {
   const { type } = action;
   switch (type) {
-    case "MOVE_RIPLEY_AMMO":
-      return {
-        ...state,
-        energyball: action.payload.updatedEnergyball,
-        position: action.payload.updatedPosition,
-        id: action.payload.id
-      };
     case "RIPLEY_AMMO_ACTION":
-      alert("I've been shot");
-
       return {
         ...state
       };
     case "UPDATE_ENERGYBALL_ARRAY":
-    return{...state,
-    energyball: action.payload.energyballArray}
+      return {
+        ...state,
+        energyball: action.payload.energyballArray
+      };
+      case"UPDATED_HIT_TOTAL":
+      return{
+        ...state, hitTotal: action.payload
+      }
+
 
     default:
       return state;

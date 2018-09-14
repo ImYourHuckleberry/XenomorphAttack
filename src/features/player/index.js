@@ -27,4 +27,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(handleInteraction(Player),handleMovement(Player))
+//export default connect(mapStateToProps)(handleInteraction(Player),handleMovement(Player))

@@ -9,13 +9,13 @@ export default function handleMovement(ripleyAmmo) {
   function getNewPosition(oldPos, direction) {
     switch (direction) {
       case "WEST":
-        return [(oldPos[0] - SPRITE_SIZE), oldPos[1]];
+        return [oldPos[0], oldPos[1] - SPRITE_SIZE];
       case "EAST":
-        return [(oldPos[0] + SPRITE_SIZE), oldPos[1]];
+        return [oldPos[0], oldPos[1] - SPRITE_SIZE];
       case "NORTH":
-        return [oldPos[0], (oldPos[1] - SPRITE_SIZE)];
+        return [oldPos[0], oldPos[1] - SPRITE_SIZE];
       case "SOUTH":
-        return [oldPos[0], (oldPos[1] + SPRITE_SIZE)];
+        return [oldPos[0], oldPos[1] - SPRITE_SIZE];
       default:
         return "why am i executing";
     }
@@ -27,13 +27,13 @@ export default function handleMovement(ripleyAmmo) {
 
     switch (direction) {
       case "WEST":
-        return [(oldPos[0] -= SPRITE_SIZE), oldPos[1]];
+        return [oldPos[0], (oldPos[1] -= SPRITE_SIZE)];
       case "EAST":
-        return [(oldPos[0] += SPRITE_SIZE), oldPos[1]];
+        return [oldPos[0], (oldPos[1] -= SPRITE_SIZE)];
       case "NORTH":
         return [oldPos[0], (oldPos[1] -= SPRITE_SIZE)];
       case "SOUTH":
-        return [oldPos[0], (oldPos[1] += SPRITE_SIZE)];
+        return [oldPos[0], (oldPos[1] -= SPRITE_SIZE)];
       default:
         return "nothing here";
     }
@@ -56,171 +56,144 @@ export default function handleMovement(ripleyAmmo) {
   }
 
   function observeOtherCharacter(newPos) {
-    const piercePosition = store.getState().pierce.position;
-    const playerPosition = store.getState().player.position;
-    const abedPosition = store.getState().abed.position;
+    console.log(newPos);
+
+    const piercePositions = store
+      .getState()
+      .pierce.pierceArray.filter(
+        pierce =>
+          (pierce.position[0] === newPos[0] &&
+            pierce.position[1] === newPos[1]) ||
+          (pierce.position[0] === newPos[0] &&
+            pierce.position[1] === newPos[1] + 64)
+      );
+    console.log("been hit this turn");
+    console.log(piercePositions);
+
     const ripleyPosition = store.getState().ripley.position;
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
 
-    if (
-      (piercePosition[0] === newPos[0] && piercePosition[1] === newPos[1]) ||
-      (playerPosition[0] === newPos[0] && playerPosition[1] === newPos[1]) ||
-      (abedPosition[0] === newPos[0] && abedPosition[1] === newPos[1])
-      ||(ripleyPosition[0]===newPos[0]&& ripleyPosition[1]===newPos[1])
-    )
-      return true;
+    if (piercePositions && piercePositions.length) return true;
   }
 
-  function observePlayer(newPos) {
-    
-    const playerPosition = store.getState().player.position;
-    
+  function observePierce(newPos) {
+    const piercePosition = store.getState().pierce.position;
+
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
 
-    if (
-      
-      (playerPosition[0] === newPos[0] && playerPosition[1] === newPos[1]) 
-      
-    )
+    if (piercePosition[0] === newPos[0] && piercePosition[1] === newPos[1])
       return true;
   }
 
-
-  // function occupySameSpace(newPos){    const piercePosition = store.getState().pierce.position;
-  //   const playerPosition = store.getState().player.position;
-  //   const abedPosition = store.getState().abed.position;
-  //   const ripleyPosition = store.getState().ripley.position;
-  //   const y = newPos[1] / SPRITE_SIZE;
-  //   const x = newPos[0] / SPRITE_SIZE;
-  //   const test = store.getState().abedAmmo.energyball
-  //   let i
-
-
-  //   for (i=0; i<test.length;i++){
-    
-
-  //   if (
-  //     (piercePosition[0] === test[i].position[0] && piercePosition[1] === test[i].position[1]) ||
-  //     (playerPosition[0] === test[i].position[0] && playerPosition[1] === test[i].position[1]) ||
-  //     (abedPosition[0] === test[i].position[0] && abedPosition[1] === test[i].position[1])
-  //     ||(ripleyPosition[0]===test[i].position[0]&& ripleyPosition[1]===test[i].position[1])
-  //   )
-  //     return true;}}
-
   function dispatchNewEnergyballArray(energyballArray) {
-    
-    console.log(energyballArray)
-    store.dispatch(
-      {
+    store.dispatch({
       type: "UPDATE_ENERGYBALL_ARRAY",
-      payload: { energyballArray}
+      payload: { energyballArray }
     });
   }
-
-  // function dispatchMove(thisEnergyball) {
-  //   const energyballs = store.getState().ripleyAmmo.energyball;
-  //   const id = store.getState().ripleyAmmo.id;
-  //   const updatedEnergyball = energyballs;
-  //   const updatedId = id + 1;
-  //   updatedEnergyball.push(thisEnergyball);
-  //   const updatedPosition = energyballs.map(energyball =>
-  //     mapNewPosition(energyball)
-  //   );
-
-  //   store.dispatch({
-  //     type: "MOVE_RIPLEY_AMMO",
-  //     payload: { updatedEnergyball, updatedPosition, updatedId }
-  //   });
-  // }
 
   function dispatchInteraction(thisEnergyball) {
     store.dispatch({
-      type: "RIPLEY_AMMO_ACTION",
+      type: "RIPLEY_AMMO_ACTION"
     });
   }
   function makeEnergyball() {
-
-
-
     const id = store.getState().ripleyAmmo.id;
-    
-    const hitSomething = store.getState().ripleyAmmo.hitSomething
+
+    const hitSomething = store.getState().ripleyAmmo.hitSomething;
     const direction = store.getState().ripley.direction;
     const oldPos = store.getState().ripley.position;
     const newPos = getNewPosition(oldPos, direction);
-    
-    if(observeBoundaries(newPos) &&
-    observeImpassable(newPos) 
-    ){
+    const upgrade = store.getState().ripleyAmmo.hitTotal
 
-    const energyballs = store.getState().ripleyAmmo.energyball;
+    if (observeBoundaries(newPos) && observeImpassable(newPos)) {
+      const energyballs = store.getState().ripleyAmmo.energyball;
 
+      const energyball = { id, direction, position: newPos, hitSomething };
 
-    const energyball = { id, direction, position: newPos, hitSomething };
+      const updatedEnergyballs = energyballs.concat(energyball);
+      console.log("these are my balls");
+      console.log(updatedEnergyballs);
+      if (upgrade<100){
+      const noHit = updatedEnergyballs.filter(
+        ball => ball.hitSomething === false
+      );
 
-    const updatedEnergyballs = energyballs.concat(energyball);
-    const noHit = updatedEnergyballs.filter(ball=>ball.hitSomething===false)
-    console.log(noHit)
+      dispatchNewEnergyballArray(noHit)
+      attemptMove();;}
+      else(
+        dispatchNewEnergyballArray(updatedEnergyballs),
+      attemptMove())
+    }
+  }
 
-    dispatchNewEnergyballArray(noHit);
-    attemptMove();
-  }}
-  //make energyball needs an observe stuff parameter too so you cant just spawn bullets into out of bounds or into objects
+  function dispatchNewHitTotal(updatedHitTotal) {
+    store.dispatch({
+      type: "UPDATED_HIT_TOTAL",
+      payload: updatedHitTotal
+    });
+  }
+
+  function newHitTotal() {
+    const alreadyHit = store.getState().ripleyAmmo.hitTotal;
+    console.log(alreadyHit);
+    const updatedHitTotal = alreadyHit + 1;
+    console.log(updatedHitTotal);
+    dispatchNewHitTotal(updatedHitTotal);
+  }
 
   function attemptMove() {
     const energyballs = store.getState().ripleyAmmo.energyball;
-    console.log("heres my balls");
-    console.log(energyballs);
-   
 
     const newPos = energyballs.map(energyball => mapNewPosition(energyball));
-    console.log("these are my new positions");
-    console.log(newPos);
-
-    //THIS IS THE STARTING POINT FOR TOMORROW, YOU NEED TO GET EVERY ENERGYBALL IN THE ARRAY TO OBSERVE BOUNDRIES/IMPASSABLE/OTHER CHARACTERS
-
-    //   console.log(energyballs.position)
-    //   const oldPos = energyballs.position
-    //   const newPos = mapNewPosition(energyballs);
 
     let i;
-    for (i = 0; i < newPos.length; i++) {
-      console.log(newPos)
-      if (
-        observeBoundaries(newPos[i]) &&
-        observeImpassable(newPos[i]) &&
-        !observeOtherCharacter(newPos[i])
-      ) {
-        console.log("!!!");
-      } else {
-        energyballs[i].hitSomething = true
-        
-        dispatchNewEnergyballArray(energyballs)
-       if(( observePlayer(newPos[i]))) {
-        dispatchInteraction();
-       }
-
-        console.log("???");
-      }
+    for (i = 0; i < newPos.length; i++)
+     {
+      
+        observeBoundaries(newPos[i])
+          ? (observeImpassable(newPos[i]))
+            ? (!observeOtherCharacter(newPos[i]))
+              ? true
+              : (energyballs[i].hitSomething = true,
+                dispatchNewEnergyballArray(energyballs),
+                newHitTotal())
+            : (energyballs[i].hitSomething = true,
+              dispatchNewEnergyballArray(energyballs))
+          : (energyballs[i].hitSomething = true,
+        dispatchNewEnergyballArray(energyballs))
+      ;
     }
-    // // ) {
+    // {
+    //   if (
+    //     observeBoundaries(newPos[i]) &&
+    //     observeImpassable(newPos[i]) &&
+    //     !observeOtherCharacter(newPos[i])
+    //   ) {
+    //   } else {
+    //     energyballs[i].hitSomething = true;
+    //     console.log("HIT");
+    //     newHitTotal()
 
-    //   //make newPos position
-
-    //   dispatchMove(energyballs);
+    //     dispatchNewEnergyballArray(energyballs);
+    //     if (observePierce(newPos[i])) {
+    //       dispatchInteraction();
+    //     }
     //   }
-    //   //dispatch createnewenergyball
-    //   else {
-    //     dispatchInteraction();
+    // }
   }
-  //}
 
   window.addEventListener("keydown", e => {
-    makeEnergyball();
-    
-  });
+    const hits = store.getState().ripleyAmmo.hitTotal
+    if(hits>150){window.location ="/winscreen"}
+    else(
+    makeEnergyball())
+    })
+
+  
+  
 
   return ripleyAmmo;
 }

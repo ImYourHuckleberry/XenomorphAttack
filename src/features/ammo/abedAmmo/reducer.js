@@ -19,7 +19,7 @@ const initialState = {
           id: action.payload.id
         };
       case "ABED_AMMO_ACTION":
-        alert("I've been shot");
+        
   
         return {
           ...state

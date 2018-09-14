@@ -1,39 +1,39 @@
-import React from 'react'
-import Map from '../map'
-import Player from '../player'
-import Ripley from '../ripley'
-import Pierce from '../pierce'
-import Abed from '../abed'
-import RipleyAmmo from '../ammo/ripleyAmmo'
-import AbedAmmo from '../ammo/abedAmmo'
+import React from "react";
+import Map from "../map";
+import Player from "../player";
+import Ripley from "../ripley";
+import Pierce from "../pierce";
+import Abed from "../abed";
+import RipleyAmmo from "../ammo/ripleyAmmo";
+import AbedAmmo from "../ammo/abedAmmo";
 
-import {tiles } from '../../data/maps/1'
-import store from '../../config/store'
+import { tiles } from "../../data/maps/1";
+import store from "../../config/store";
 
 function World(props) {
-  store.dispatch({type: 'ADD_TILES', payload:
-{
-  tiles,
-}})
+  store.dispatch({
+    type: "ADD_TILES",
+    payload: {
+      tiles
+    }
+  });
   return (
     <div
       style={{
-        position: 'relative',
-        width: '1300px',
-        height: '650px',
-        margin: '20px auto',
+        position: "relative",
+        width: "1300px",
+        height: "650px",
+        margin: "20px auto"
       }}
     >
       <Map />
-      <Player />
-      <Ripley/>
-      <Pierce/>
-      <Abed/>
+      <Pierce />
+      <Ripley />
+
       <RipleyAmmo />
-      <AbedAmmo />
       
     </div>
-  )
+  );
 }
 
-export default World
+export default World;

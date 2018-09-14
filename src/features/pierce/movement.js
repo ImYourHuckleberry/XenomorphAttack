@@ -1,8 +1,9 @@
 import store from "../../config/store";
 import { SPRITE_SIZE, MAP_WIDTH, MAP_HEIGHT } from "../../config/constants";
-import ripley from "../ripley";
+import pierce from "../pierce";
 import player from "../player";
 import abed from "../abed";
+import ripleyAmmo from "../ammo/ripleyAmmo";
 
 export default function handleMovement(pierce) {
   function getNewPosition(oldPos, direction) {
@@ -15,36 +16,38 @@ export default function handleMovement(pierce) {
         return [oldPos[0], oldPos[1] - SPRITE_SIZE];
       case "SOUTH":
         return [oldPos[0], oldPos[1] + SPRITE_SIZE];
+      default:
+        return "why am i executing";
     }
   }
 
-  function getSpriteLocation(direction, walkIndex) {
+  function mapNewPosition(pierceArray) {
+    const oldPos = pierceArray.position;
+    const direction = pierceArray.direction;
+
     switch (direction) {
-      case "SOUTH":
-        return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 2}px`;
-      case "NORTH":
-        return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 1}px`;
-      case "EAST":
-        return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 3}px`;
       case "WEST":
-        return `${SPRITE_SIZE * walkIndex}px ${SPRITE_SIZE * 0}px`;
+        return [(oldPos[0] -= SPRITE_SIZE), oldPos[1]];
+      case "EAST":
+        return [(oldPos[0] += SPRITE_SIZE), oldPos[1]];
+      case "NORTH":
+        return [oldPos[0], (oldPos[1] -= SPRITE_SIZE)];
+      case "SOUTH":
+        return [oldPos[0], (oldPos[1] += SPRITE_SIZE)];
+      default:
+        return "nothing here";
     }
   }
 
-  function getWalkIndex() {
-    const walkIndex = store.getState().pierce.walkIndex;
-    return walkIndex >= 3 ? 0 : walkIndex + 1;
-  }
-
-  function observeBoundaries(oldPos, newPos) {
+  function observeBoundaries(newPos) {
     return (
       newPos[0] >= 0 &&
       newPos[0] <= MAP_WIDTH - SPRITE_SIZE &&
-      (newPos[1] >= 0 && newPos[1] <= MAP_HEIGHT - SPRITE_SIZE)
+      (newPos[1] >= 0 && newPos[1] <= MAP_HEIGHT - SPRITE_SIZE * 2)
     );
   }
 
-  function observeImpassable(oldPos, newPos) {
+  function observeImpassable(newPos) {
     const tiles = store.getState().map.tiles;
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
@@ -52,79 +55,165 @@ export default function handleMovement(pierce) {
     return nextTile < 5;
   }
 
-  function observeOtherCharacter(oldPos, newPos) {
+  function observeOtherCharacter(newPos) {
+    const energyballPositions = store
+      .getState()
+      .ripleyAmmo.energyball.filter(
+        ball =>
+          (ball.position[0] === newPos[0] && ball.position[1] === newPos[1]) ||
+          (ball.position[0] === newPos[0] &&
+            ball.position[1] === newPos[1] - 64)
+      );
+    const piercePosition = store.getState().pierce.position;
     const ripleyPosition = store.getState().ripley.position;
-    const playerPosition = store.getState().player.position;
-    const abedPosition = store.getState().abed.position;
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
 
-    if (
-      (ripleyPosition[0] === newPos[0] && ripleyPosition[1] === newPos[1]) ||
-      (playerPosition[0] === newPos[0] && playerPosition[1] === newPos[1]) ||
-      (abedPosition[0] === newPos[0] && abedPosition[1] === newPos[1])
-    )
+    if (energyballPositions && energyballPositions.length) return true;
+  }
+
+  function observePlayer(newPos) {
+    const playerPosition = store.getState().player.position;
+
+    const y = newPos[1] / SPRITE_SIZE;
+    const x = newPos[0] / SPRITE_SIZE;
+
+    if (playerPosition[0] === newPos[0] && playerPosition[1] === newPos[1])
       return true;
   }
 
-  function dispatchMove(direction, newPos) {
-    const walkIndex = getWalkIndex();
+  function dispatchNewPierceArrayArray(pierceArrayArray) {
     store.dispatch({
-      type: "MOVE_PIERCE",
-      payload: {
-        position: newPos,
-        direction,
-        walkIndex,
-        spriteLocation: getSpriteLocation(direction, walkIndex)
-      }
+      type: "UPDATE_PIERCE_ARRAY",
+      payload: { pierceArrayArray }
     });
   }
-  function dispatchMoveDirection(direction, oldPos){
-    const walkIndex = getWalkIndex();
+
+  function dispatchInteraction(thisPierceArray) {
     store.dispatch({
-      type:"MOVE_PIERCE",
-      payload:{position: oldPos,
-        direction,
-        walkIndex,
-        spriteLocation: getSpriteLocation(direction, walkIndex)
-    }
-  })}
-
-  function attemptMove(direction) {
-    const oldPos = store.getState().pierce.position;
-    const newPos = getNewPosition(oldPos, direction);
-
-    if (
-      observeBoundaries(oldPos, newPos) &&
-      observeImpassable(oldPos, newPos) &&
-      !observeOtherCharacter(oldPos, newPos)
-    )
-      dispatchMove(direction, newPos);
-      else(dispatchMoveDirection(direction, oldPos))
+      type: "PIERCE_ACTION"
+    });
   }
 
-  function handleKeyDown(e) {
-    e.preventDefault();
-    const int = Math.floor(Math.random() * Math.floor(4))
+  function getRandomPos(max) {
+    const int = Math.floor(Math.random() * Math.floor(max)) * 64;
+    const randomPos = [int, -64];
+    console.log(randomPos);
+    return randomPos;
+  }
+  function makePierceArray() {
+    const id = store.getState().pierce.id;
 
-    switch (int) {
-      case 0:
-        return attemptMove("WEST");
+    const hitSomething = store.getState().pierce.hitSomething;
+    const direction = store.getState().pierce.direction;
+    const oldPos = store.getState().pierce.position;
+    const thisNewThing = getRandomPos(19);
+    const newPos = getNewPosition(thisNewThing, direction);
 
-      case 1:
-        return attemptMove("NORTH");
+    console.log("I am the newPosition");
+    console.log(newPos);
 
-      case 2:
-        return attemptMove("EAST");
+    if (observeBoundaries(newPos) && observeImpassable(newPos)) {
+      const pierceArrays = store.getState().pierce.pierceArray;
+      console.log("am the the array pre-update");
+      console.log(pierceArrays);
 
-      case 3:
-        return attemptMove("SOUTH");
+      const pierceArray = { id, direction, position: newPos, hitSomething };
+      console.log("I am the newly created pierce object");
+      console.log(pierceArray);
 
-      default:
+      const updatedPierceArrays = pierceArrays.concat(pierceArray);
+      console.log("I am the entire array after the addition");
+      console.log(updatedPierceArrays);
+      const noHit = updatedPierceArrays.filter(
+        pierce => pierce.hitSomething === false
+      );
+      console.log("I am the array accounting for hitting things");
+      console.log(noHit);
+
+      dispatchNewPierceArrayArray(noHit);
+      attemptMove();
     }
+  }
+  function dispatchNewHealthTotal(updatedHealthTotal) {
+    store.dispatch({
+      type: "UPDATED_HEALTH_TOTAL",
+      payload: updatedHealthTotal
+    });
+  }
+
+  function newHealthTotal() {
+    const health = store.getState().pierce.healthTotal;
+
+    const updatedHealthTotal = health - 1;
+    console.log(updatedHealthTotal);
+    dispatchNewHealthTotal(updatedHealthTotal);
+  }
+
+  function attemptMove() {
+    const pierceArrays = store.getState().pierce.pierceArray;
+
+    const newPos = pierceArrays.map(pierceArray => mapNewPosition(pierceArray));
+
+    let i;
+    for (i = 0; i < newPos.length; i++) {
+      observeBoundaries(newPos[i])
+        ? observeImpassable(newPos[i])
+          ? !observeOtherCharacter(newPos[i])
+            ? true
+            : ((pierceArrays[i].hitSomething = true),
+              dispatchNewPierceArrayArray(pierceArrays))
+          : ((pierceArrays[i].hitSomething = true),
+            dispatchNewPierceArrayArray(pierceArrays))
+        : ((pierceArrays[i].hitSomething = true),
+          dispatchNewPierceArrayArray(pierceArrays),
+          newHealthTotal());
+    }
+
+    // {
+    //   if (
+    //     observeBoundaries(newPos[i]) &&
+    //     observeImpassable(newPos[i]) &&
+    //     !observeOtherCharacter(newPos[i])
+    //   ) {
+    //   } else {
+    //     pierceArrays[i].hitSomething = true;
+
+    //     dispatchNewPierceArrayArray(pierceArrays);
+    //   }
+    // }
+  }
+  function dispatchNewSpawnState(spawn) {
+    store.dispatch({
+      type: "UPDATE_DOISPAWN",
+      payload: spawn
+    });
+  }
+  function flipSpawnSwitch(spawnState) {
+    const switchSpawn = !spawnState;
+    dispatchNewSpawnState(switchSpawn);
+  }
+  function doISpawn() {
+    const spawnState = store.getState().pierce.doISpawn;
+    if (spawnState === true) {
+      flipSpawnSwitch(spawnState);
+
+      makePierceArray();
+    } else console.log("false");
+    flipSpawnSwitch(spawnState);
   }
   window.addEventListener("keydown", e => {
-    handleKeyDown(e);
+    const health = store.getState().pierce.healthTotal;
+    const totalhit = store.getState().ripleyAmmo.hitTotal;
+    totalhit > 150
+      ? window.removeEventListener("keydown", e)
+      : health >= 0
+        ? doISpawn()
+        : (window.location = "/battlescreen"),window.removeEventListener("keydown", e));
+
+    // {
+    // doISpawn();}
+    // else (window.location="/battlescreen")
   });
 
   return pierce;

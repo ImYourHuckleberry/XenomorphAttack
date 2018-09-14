@@ -26,4 +26,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(handleMovement(Abed))
+//export default connect(mapStateToProps)(handleMovement(Abed))

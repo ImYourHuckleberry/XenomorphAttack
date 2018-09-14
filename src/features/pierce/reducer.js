@@ -1,24 +1,43 @@
 const initialState = {
-    position: [0, 192],
-    spriteLocation: "0px 0px",
-    direction: "EAST",
-    walkIndex: 0,
-    interaction: ""
-  };
-  
-  const pierceReducer = (state = initialState, action) => {
-      const{type}=action
-    switch (type) {
-      case "MOVE_PIERCE":
-        return {
-          ...action.payload
-        };
-      
+  position: [10000,10000],
+  spriteLocation: "0px 0px",
+  direction: "SOUTH",
+  walkIndex: 0,
+  interaction: "",
+  pierceArray: [],
+  hitSomething: false,
+  id: 1,
+  doISpawn:true,
+  healthTotal:10
+  ,
+};
+
+const pierceReducer = (state = initialState, action) => {
+  const { type } = action;
+  switch (type) {
     
-  
-      default:
-        return state;
-    }
-  };
-  
-  export default pierceReducer;
+    case "UPDATE_PIERCE_ARRAY":
+      return {
+        ...state,
+        pierceArray: action.payload.pierceArrayArray
+      };
+
+      case"UPDATE_PIERCE_DIRECTION":
+      return{
+        ...state, direction: action.payload.direction
+      }
+      case"UPDATE_DOISPAWN":
+      return{
+        ...state, doISpawn: action.payload
+      }
+      case"UPDATED_HEALTH_TOTAL":
+      return{
+        ...state, healthTotal: action.payload
+      }
+
+    default:
+      return state;
+  }
+};
+
+export default pierceReducer;
