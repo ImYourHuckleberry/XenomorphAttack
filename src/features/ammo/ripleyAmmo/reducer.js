@@ -6,7 +6,8 @@ const initialState = {
   energyball: [],
   id: 1,
   hitSomething: false,
-  hitTotal:140
+  hitTotal:0,
+  useSecondMap:false,
 };
 
 const ripleyAmmoReducer = (state = initialState, action) => {
@@ -24,6 +25,11 @@ const ripleyAmmoReducer = (state = initialState, action) => {
       case"UPDATED_HIT_TOTAL":
       return{
         ...state, hitTotal: action.payload
+      }
+
+      case"UPDATED_LEVEL":
+      return{
+        ...state, useSecondMap:action.payload
       }
 
 

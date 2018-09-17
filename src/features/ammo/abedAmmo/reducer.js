@@ -27,6 +27,8 @@ const initialState = {
       case "UPDATE_POTION_ARRAY":
       return{...state,
       potion: action.payload.potionArray}
+
+      
   
       default:
         return state;

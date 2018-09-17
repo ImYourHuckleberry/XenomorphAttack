@@ -8,10 +8,12 @@ import RipleyAmmo from "../ammo/ripleyAmmo";
 import AbedAmmo from "../ammo/abedAmmo";
 
 import { tiles } from "../../data/maps/1";
-import store from "../../config/store";
+
+
+import Store from "../../config/store";
 
 function World(props) {
-  store.dispatch({
+  Store.store.dispatch({
     type: "ADD_TILES",
     payload: {
       tiles
@@ -31,7 +33,6 @@ function World(props) {
       <Ripley />
 
       <RipleyAmmo />
-      
     </div>
   );
 }

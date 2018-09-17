@@ -1,4 +1,4 @@
-import store from "../../config/store";
+import Store from "../../config/store";
 import { SPRITE_SIZE, MAP_WIDTH, MAP_HEIGHT } from "../../config/constants";
 import pierce from "../pierce";
 import player from "../player";
@@ -48,7 +48,7 @@ export default function handleMovement(pierce) {
   }
 
   function observeImpassable(newPos) {
-    const tiles = store.getState().map.tiles;
+    const tiles = Store.store.getState().map.tiles;
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
     const nextTile = tiles[y][x];
@@ -56,7 +56,7 @@ export default function handleMovement(pierce) {
   }
 
   function observeOtherCharacter(newPos) {
-    const energyballPositions = store
+    const energyballPositions = Store.store
       .getState()
       .ripleyAmmo.energyball.filter(
         ball =>
@@ -64,8 +64,8 @@ export default function handleMovement(pierce) {
           (ball.position[0] === newPos[0] &&
             ball.position[1] === newPos[1] - 64)
       );
-    const piercePosition = store.getState().pierce.position;
-    const ripleyPosition = store.getState().ripley.position;
+    const piercePosition = Store.store.getState().pierce.position;
+    const ripleyPosition = Store.store.getState().ripley.position;
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
 
@@ -73,7 +73,7 @@ export default function handleMovement(pierce) {
   }
 
   function observePlayer(newPos) {
-    const playerPosition = store.getState().player.position;
+    const playerPosition = Store.store.getState().player.position;
 
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
@@ -83,14 +83,14 @@ export default function handleMovement(pierce) {
   }
 
   function dispatchNewPierceArrayArray(pierceArrayArray) {
-    store.dispatch({
+    Store.store.dispatch({
       type: "UPDATE_PIERCE_ARRAY",
       payload: { pierceArrayArray }
     });
   }
 
   function dispatchInteraction(thisPierceArray) {
-    store.dispatch({
+    Store.store.dispatch({
       type: "PIERCE_ACTION"
     });
   }
@@ -102,11 +102,11 @@ export default function handleMovement(pierce) {
     return randomPos;
   }
   function makePierceArray() {
-    const id = store.getState().pierce.id;
+    const id = Store.store.getState().pierce.id;
 
-    const hitSomething = store.getState().pierce.hitSomething;
-    const direction = store.getState().pierce.direction;
-    const oldPos = store.getState().pierce.position;
+    const hitSomething = Store.store.getState().pierce.hitSomething;
+    const direction = Store.store.getState().pierce.direction;
+    const oldPos = Store.store.getState().pierce.position;
     const thisNewThing = getRandomPos(19);
     const newPos = getNewPosition(thisNewThing, direction);
 
@@ -114,7 +114,7 @@ export default function handleMovement(pierce) {
     console.log(newPos);
 
     if (observeBoundaries(newPos) && observeImpassable(newPos)) {
-      const pierceArrays = store.getState().pierce.pierceArray;
+      const pierceArrays = Store.store.getState().pierce.pierceArray;
       console.log("am the the array pre-update");
       console.log(pierceArrays);
 
@@ -136,14 +136,14 @@ export default function handleMovement(pierce) {
     }
   }
   function dispatchNewHealthTotal(updatedHealthTotal) {
-    store.dispatch({
+    Store.store.dispatch({
       type: "UPDATED_HEALTH_TOTAL",
       payload: updatedHealthTotal
     });
   }
 
   function newHealthTotal() {
-    const health = store.getState().pierce.healthTotal;
+    const health = Store.store.getState().pierce.healthTotal;
 
     const updatedHealthTotal = health - 1;
     console.log(updatedHealthTotal);
@@ -151,7 +151,7 @@ export default function handleMovement(pierce) {
   }
 
   function attemptMove() {
-    const pierceArrays = store.getState().pierce.pierceArray;
+    const pierceArrays = Store.store.getState().pierce.pierceArray;
 
     const newPos = pierceArrays.map(pierceArray => mapNewPosition(pierceArray));
 
@@ -184,7 +184,7 @@ export default function handleMovement(pierce) {
     // }
   }
   function dispatchNewSpawnState(spawn) {
-    store.dispatch({
+    Store.store.dispatch({
       type: "UPDATE_DOISPAWN",
       payload: spawn
     });
@@ -194,7 +194,7 @@ export default function handleMovement(pierce) {
     dispatchNewSpawnState(switchSpawn);
   }
   function doISpawn() {
-    const spawnState = store.getState().pierce.doISpawn;
+    const spawnState = Store.store.getState().pierce.doISpawn;
     if (spawnState === true) {
       flipSpawnSwitch(spawnState);
 
@@ -203,8 +203,8 @@ export default function handleMovement(pierce) {
     flipSpawnSwitch(spawnState);
   }
   window.addEventListener("keydown", e => {
-    const health = store.getState().pierce.healthTotal;
-    const totalhit = store.getState().ripleyAmmo.hitTotal;
+    const health = Store.store.getState().pierce.healthTotal;
+    const totalhit = Store.store.getState().ripleyAmmo.hitTotal;
     totalhit > 150
       ? window.removeEventListener("keydown", e)
       : health > 0

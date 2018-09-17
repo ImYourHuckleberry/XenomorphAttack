@@ -1,4 +1,4 @@
-import store from "../../../config/store";
+import Store from "../../../config/store";
 import { SPRITE_SIZE, MAP_WIDTH, MAP_HEIGHT } from "../../../config/constants";
 import pierce from "../../pierce";
 import player from "../../player";
@@ -48,7 +48,7 @@ export default function handleMovement(ripleyAmmo) {
   }
 
   function observeImpassable(newPos) {
-    const tiles = store.getState().map.tiles;
+    const tiles = Store.store.getState().map.tiles;
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
     const nextTile = tiles[y][x];
@@ -58,7 +58,7 @@ export default function handleMovement(ripleyAmmo) {
   function observeOtherCharacter(newPos) {
     console.log(newPos);
 
-    const piercePositions = store
+    const piercePositions = Store.store
       .getState()
       .pierce.pierceArray.filter(
         pierce =>
@@ -70,7 +70,7 @@ export default function handleMovement(ripleyAmmo) {
     console.log("been hit this turn");
     console.log(piercePositions);
 
-    const ripleyPosition = store.getState().ripley.position;
+    const ripleyPosition = Store.store.getState().ripley.position;
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
 
@@ -78,7 +78,7 @@ export default function handleMovement(ripleyAmmo) {
   }
 
   function observePierce(newPos) {
-    const piercePosition = store.getState().pierce.position;
+    const piercePosition = Store.store.getState().pierce.position;
 
     const y = newPos[1] / SPRITE_SIZE;
     const x = newPos[0] / SPRITE_SIZE;
@@ -88,28 +88,28 @@ export default function handleMovement(ripleyAmmo) {
   }
 
   function dispatchNewEnergyballArray(energyballArray) {
-    store.dispatch({
+    Store.store.dispatch({
       type: "UPDATE_ENERGYBALL_ARRAY",
       payload: { energyballArray }
     });
   }
 
   function dispatchInteraction(thisEnergyball) {
-    store.dispatch({
+    Store.store.dispatch({
       type: "RIPLEY_AMMO_ACTION"
     });
   }
   function makeEnergyball() {
-    const id = store.getState().ripleyAmmo.id;
+    const id = Store.store.getState().ripleyAmmo.id;
 
-    const hitSomething = store.getState().ripleyAmmo.hitSomething;
-    const direction = store.getState().ripley.direction;
-    const oldPos = store.getState().ripley.position;
+    const hitSomething = Store.store.getState().ripleyAmmo.hitSomething;
+    const direction = Store.store.getState().ripley.direction;
+    const oldPos = Store.store.getState().ripley.position;
     const newPos = getNewPosition(oldPos, direction);
-    const upgrade = store.getState().ripleyAmmo.hitTotal;
+    const upgrade = Store.store.getState().ripleyAmmo.hitTotal;
 
     if (observeBoundaries(newPos) && observeImpassable(newPos)) {
-      const energyballs = store.getState().ripleyAmmo.energyball;
+      const energyballs = Store.store.getState().ripleyAmmo.energyball;
 
       const energyball = { id, direction, position: newPos, hitSomething };
 
@@ -128,14 +128,14 @@ export default function handleMovement(ripleyAmmo) {
   }
 
   function dispatchNewHitTotal(updatedHitTotal) {
-    store.dispatch({
+    Store.store.dispatch({
       type: "UPDATED_HIT_TOTAL",
       payload: updatedHitTotal
     });
   }
 
   function newHitTotal() {
-    const alreadyHit = store.getState().ripleyAmmo.hitTotal;
+    const alreadyHit = Store.store.getState().ripleyAmmo.hitTotal;
     console.log(alreadyHit);
     const updatedHitTotal = alreadyHit + 1;
     console.log(updatedHitTotal);
@@ -143,7 +143,7 @@ export default function handleMovement(ripleyAmmo) {
   }
 
   function attemptMove() {
-    const energyballs = store.getState().ripleyAmmo.energyball;
+    const energyballs = Store.store.getState().ripleyAmmo.energyball;
 
     const newPos = energyballs.map(energyball => mapNewPosition(energyball));
 
@@ -181,8 +181,10 @@ export default function handleMovement(ripleyAmmo) {
   }
 
   window.addEventListener("keydown", e => {
-    const totalHits = store.getState().ripleyAmmo.hitTotal;
-    const health = store.getState().pierce.healthTotal;
+    const totalHits = Store.store.getState().ripleyAmmo.hitTotal;
+    const health = Store.store.getState().pierce.healthTotal;
+   
+    
 
     health <= 0
       ? window.removeEventListener("keydown", e)

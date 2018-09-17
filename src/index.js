@@ -1,12 +1,21 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import './index.css'
-import App from './App'
-import { Provider } from 'react-redux'
-import Main from './routes'
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import { Provider } from "react-redux";
+import Main from "./routes";
+import CharacterSelect from "./CharacterSelect"
 
-import store from './config/store'
+import Store from "./config/store";
 
-ReactDOM.render(<Provider store={store}>
-  <Main />
-</Provider>, document.getElementById('root'))
+
+import { PersistGate } from "redux-persist/integration/react";
+
+ReactDOM.render(
+  <Provider store={Store.store}>
+    <PersistGate loading={null} persistor={Store.persistor}>
+      <Main />
+    </PersistGate>
+  </Provider>,
+  document.getElementById("root")
+);

@@ -4,7 +4,7 @@ const initialState = {
     direction: "EAST",
     walkIndex: 0,
     interaction: "",
-    isAbed:false,
+    isAbed:true,
     
   };
   

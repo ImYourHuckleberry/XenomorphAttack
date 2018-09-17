@@ -8,7 +8,7 @@ const initialState = {
   hitSomething: false,
   id: 1,
   doISpawn:true,
-  healthTotal:10
+  healthTotal:100
   ,
 };
 

@@ -1,13 +1,13 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import ripleySprite from './mechsuit.png'
-import handleMovement from './movement'
-import abedSprite from './abed.png'
-import store from '../../config/store';
+import React from 'react';
+import { connect } from 'react-redux';
+import Store from '../../config/store';
+import abedSprite from './abed.png';
+import ripleySprite from './mechsuit.png';
+import handleMovement from './movement';
 
 function Ripley(props) {
 
-  if (store.getState().ripley.isAbed === false){
+  if (Store.store.getState().ripley.isAbed === false){
    
   return (
     
@@ -35,6 +35,9 @@ else{return ( <div
     height: '65px',
   }}
 />)}
+
+
+
 }
 function mapStateToProps(state) {
   return {
