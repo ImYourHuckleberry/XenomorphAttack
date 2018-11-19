@@ -94,6 +94,11 @@ export default function handleMovement(pierce) {
       type: "PIERCE_ACTION"
     });
   }
+  function getWalkIndex() {
+    const walkIndex = Store.store.getState().pierce.walkIndex;
+    return walkIndex >= 3 ? 0 : walkIndex + 1;
+  }
+
 
   function getRandomPos(max) {
     const int = Math.floor(Math.random() * Math.floor(max)) * 64;
@@ -109,6 +114,7 @@ export default function handleMovement(pierce) {
     const oldPos = Store.store.getState().pierce.position;
     const thisNewThing = getRandomPos(19);
     const newPos = getNewPosition(thisNewThing, direction);
+    const walkIndex = getWalkIndex()
 
     console.log("I am the newPosition");
     console.log(newPos);
@@ -118,7 +124,7 @@ export default function handleMovement(pierce) {
       console.log("am the the array pre-update");
       console.log(pierceArrays);
 
-      const pierceArray = { id, direction, position: newPos, hitSomething };
+      const pierceArray = { walkIndex, id, direction, position: newPos, hitSomething };
       console.log("I am the newly created pierce object");
       console.log(pierceArray);
 

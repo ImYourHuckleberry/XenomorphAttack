@@ -24,16 +24,16 @@ play(){
       <div><div>Select A Character</div>
           <div>
        <button onClick= {this.play}><img
-            style={{ width: "100px" }}
+            style={{ width: "100px", height: "150px"}}
             src="/characters/singleabed.png"
             alt="Abed"
-          /></button>
+          /><div>ABED</div></button>
       </div>
       <div><button onClick={this.dispatchAbedState}><img
-            style={{ width: "100px" }}
+            style={{ width: "100px", height:"150px"}}
             src="/characters/singleripley.png"
             alt="Ripley"
-          />
+          /><div>RIPLEY</div>
           </button></div></div>
     )
   }
